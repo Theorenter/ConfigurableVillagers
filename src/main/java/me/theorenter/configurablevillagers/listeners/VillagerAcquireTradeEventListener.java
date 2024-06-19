@@ -6,6 +6,7 @@ import me.theorenter.configurablevillagers.object.VillagerWrapper;
 import me.theorenter.configurablevillagers.utils.TradeStorage;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.WanderingTrader;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,6 +28,9 @@ public final class VillagerAcquireTradeEventListener implements Listener {
             return;
 
         Villager villager = (Villager) e.getEntity();
+
+        if (villager instanceof WanderingTrader)
+            return;
 
         VillagerWrapper vw = new VillagerWrapper(villager);
 
