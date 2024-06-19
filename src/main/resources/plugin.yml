@@ -1,0 +1,18 @@
+name: ConfigurableVillagers
+version: '${project.version}'
+main: me.theorenter.configurablevillagers.ConfigurableVillagers
+api-version: '1.20'
+# commands:
+#   configurablevillagers:
+#     description: Main command of the plugin.
+#     usage: /<command>
+#     aliases: [ cv ]
+#     permission: configurablevillagers.command.configurablevillagers
+#
+# permissions:
+#   configurablevillagers.*:
+#     default: op
+#     description: Give players with op everything by default.
+#   configurablevillagers.command.configurablevillagers:
+#     default: op
+#     description: Players with this permission can interact with the main plugin command.

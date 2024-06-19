@@ -1,0 +1,42 @@
+version:
+  # This is the current version of plugin. Please do not edit.
+  version: "${project.version}"
+
+############################################################
+# +------------------------------------------------------+ #
+# |                       Language                       | #
+# +------------------------------------------------------+ #
+############################################################
+language:
+  # Plugin's default localization.
+  default-localization: "en_US"
+
+  # If set to True, players will first receive localized messages corresponding to the
+  # localization of their client and if the localization is not in the plugin, then they
+  # will receive all data from the language specified in the default-localization parameters.
+  #
+  # If set to False, the default localization specified in "default-localization"
+  # is applied to all players.
+  client-based: false
+
+############################################################
+# +------------------------------------------------------+ #
+# |                   Global settings                    | #
+# +------------------------------------------------------+ #
+############################################################
+settings:
+  # Will custom trades read from "trades.yml" file and sets for villagers.
+  use-custom-trades: true
+
+  #  If True, then cartographers, regardless of the contents of "trades.yml" will sell vanilla filled maps.
+  use-vanilla-cartographer-maps: true
+
+  # Balance changes when curing villagers.
+  curing:
+    major-positive:
+      fixed: true
+      set: 0
+
+    minor-positive:
+      fixed: true
+      set: 10
