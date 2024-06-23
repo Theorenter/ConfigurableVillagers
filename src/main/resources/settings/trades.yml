@@ -1,1 +1,77 @@
 # List of custom villager trade offers
+#--- ABOUT FIELDS -------------------------------
+#
+# - ID: <custom trade identifier> # (required) The identifier of the custom trade. Must be unique!
+#
+#   ingredients:
+#     - material: <minecraft material ID> # (required) The first item the trader wants.
+#       amount: <number> (optional | default: 1) The amount of the item that trader wants.
+#     - material: <minecraft material ID> # (optional) The second item the trader wants.
+#       amount: <number> (optional | default: 1) The amount of the item that trader wants.
+#
+#   result:
+#      material: <minecraft material ID> # (required) The result of the trade.
+#      amount: <number> (optional | default: 1) The amount of the item that trader wants.
+#      enchantments: [<enchantment>] # (optional) A list of enchantments that the item has.
+#      lore: [<string>] # (optional) The item lore (appears under the item name).
+#
+#
+#   max-uses: <number> (optional | default: 12) The number of times this trade can be made before needing to be refreshed.
+#
+#   experience: <number> # (optional | default: 0) The amount of experience the villager/player receives.
+#
+#   price-multiplier: # (optional | default: 0) The trade cost multiplier for items.
+#                                               This effects how much the cost of the trade changes depending on
+#                                               factors such as how much the villager likes or hates you, as well as how much
+#                                               you have traded this item recently.
+#
+#                                               This value is used in the following formula when trading:
+#                                               y = x - floor((5A + B + C - D - 5E) × P), Where y is the final price, x is
+#                                               the base price, A is the value of major_positive, B is the value of minor_positive,
+#                                               C is the value of trading, D is the value of minor_negative, E is the value of major_negative,
+#                                               and P is the value of price-multiplier.
+#
+#                                               more here: https://minecraft.wiki/w/Villager#Gossiping
+#
+#   giveExperienceToPlayer: <boolean> # (optional | default: false) Whether the  player receives the experience or not.
+#
+#   professions: [<villager profession>] # (optional | default: all professions) The required professions a villager needs to acquire this trade.
+#
+#   villagerTypes: [<villager type>] # (optional | default: all types) The villager type(s) that a villager needs to be to acquire this trade.
+#
+#   levels: [<number>] # (optional | default: all levels [1 - 5]) The levels at  which a trader could acquire this trade.
+#
+#--- TRADES EXAMPLE  --------------------------------
+#
+# trades:
+#   - ID: "emeralds for beetroots"
+#     ingredients:
+#       - material: BEETROOT
+#         amount: 25
+#     result:
+#       material: EMERALD
+#       amount: 1
+#     maxUses: 12
+#     experience: 2
+#     priceMultiplier: 0.2
+#     giveExperienceToPlayer: true
+#     villagerTypes: [ SNOW, TAIGA ]
+#     levels: [ 1 ]
+#     professions: [ FARMER ]
+#
+#   - ID: "spider eyes for emeralds"
+#     ingredients:
+#       - material: SPIDER_EYE
+#         amount: 16
+#     result:
+#       material: GLISTERING_MELON_SLICE
+#       amount: 2
+#     max-uses: 12
+#     experience: 20
+#     price-multiplier: 0.2
+#     give-experience-to-player: true
+#     villagerTypes: [ SWAMP ]
+#     levels: [ 5 ]
+#     professions: [ FARMER ]
+#----------------------------------------------------
+trades:

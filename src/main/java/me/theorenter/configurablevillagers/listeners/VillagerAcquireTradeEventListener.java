@@ -24,6 +24,9 @@ public final class VillagerAcquireTradeEventListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onVillagerAcquireTrade(@NotNull final VillagerAcquireTradeEvent e) {
 
+        if (e.getEntity() instanceof WanderingTrader)
+            return;
+
         if (e.getRecipe().getResult().getType() == Material.FILLED_MAP && plugin.getCfg().USE_VANILLA_CARTOGRAPHER_MAPS)
             return;
 

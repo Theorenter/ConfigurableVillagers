@@ -54,7 +54,6 @@ public final class EntityTransformListener implements Listener {
 
             if (z.getConversionPlayer() != null) {
                 UUID healerUUID = z.getConversionPlayer().getUniqueId();
-                System.out.println(healerUUID + " – хиллер!");
 
                 Reputation rep = villager.getReputation(healerUUID);
                 if (plugin.getCfg().MAJOR_POSITIVE_FIXED)

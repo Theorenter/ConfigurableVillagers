@@ -12,7 +12,6 @@ import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -61,23 +60,25 @@ public final class TradeLoader {
     public void loadAll() {
 
         // Each key is an itemID
-        Set<String> identifiers = this.fileConfig.getKeys(false);
-        if (identifiers.isEmpty()) {
+        List<Object> customTrades = (List<Object>) fileConfig.getList("trades");
+
+        if (customTrades == null || customTrades.isEmpty()) {
             plugin.getLogger().warning("No custom trades were found in the trades.yml file!");
             return;
         }
 
         int loadedTrades = 0;
 
-        for (String ID : identifiers) {
-            Object recipeSectionData = this.fileConfig.get(ID);
-            if (!(recipeSectionData instanceof MemorySection)) {
-                plugin.getLogger().warning("Unable to read \"" + ID + "\" recipe. Invalid recipe format");
+        for (Object recipeObject : customTrades) {
+            if (!(recipeObject instanceof LinkedHashMap)) {
+                plugin.getLogger().warning("Unable to read recipes. Found invalid recipe format");
                 plugin.getLogger().warning("This recipe will be skipped!");
             }
             else {
+                LinkedHashMap recipeMap = (LinkedHashMap) recipeObject;
+                String ID = (String) recipeMap.get("ID");
                 try {
-                    CustomTrade ct = load((MemorySection) recipeSectionData, ID);
+                    CustomTrade ct = load(recipeMap, ID);
                     loadedTrades++;
                     plugin.getTradeStorage().register(ct);
                 } catch (ResultNotFoundException e) {
@@ -88,20 +89,19 @@ public final class TradeLoader {
                     e.printStackTrace();
                 } catch (CustomTradeKeyAlreadyExistsException e) {
                     plugin.getLogger().warning("Unable to register \"" + ID + "\" recipe. Recipe with this ID already registered!");
-                    throw new RuntimeException(e);
                 }
             }
         }
-        plugin.getLogger().info("Loaded " + loadedTrades + " / " + identifiers.size() + " custom trades from \"trades.yml\"");
+        plugin.getLogger().info("Loaded " + loadedTrades + " / " + customTrades.size() + " custom trades from \"trades.yml\"");
     }
 
     /**
      * Load single custom merchant from the trades.yml
-     * @param section The section of the trade.
+     * @param trade The section of the trade.
      * @param ID The identifier of the custom trade.
      * @return {@link CustomTrade}.
      */
-    private CustomTrade load(@NotNull final MemorySection section, @NotNull final String ID) throws ResultNotFoundException, IngredientsNotFoundException {
+    private CustomTrade load(@NotNull final LinkedHashMap<String, Object> trade, @NotNull final String ID) throws ResultNotFoundException, IngredientsNotFoundException {
         CustomTrade customTrade;
 
         ItemStack result;
@@ -109,23 +109,26 @@ public final class TradeLoader {
         ItemStack firstIngredient;
         ItemStack secondIngredient = null;
 
-        int maxUses = section.getInt("maxUses");
-        float priceMultiplier = (float) section.getDouble("priceMultiplier");
-        int villagerExperience = section.getInt("experience");
-        boolean giveExperienceToPlayer = section.getBoolean("giveExperienceToPlayer");
-        boolean ignoreDiscounts = section.getBoolean("ignoreDiscounts");
+        int maxUses = (int) trade.getOrDefault("max-uses", 12);
+        double priceMultiplier = (double) trade.getOrDefault("price-multiplier", 0);
+        int villagerExperience = (int) trade.getOrDefault("experience", 0);
+        boolean giveExperienceToPlayer = (boolean) trade.getOrDefault("give-experience-to-player", false);
 
         // requirement variables
-        List<Villager.Profession> professions = toVillagerProfessionList(section.getStringList("professions"));
-        List<Integer> levels = section.getIntegerList("levels");
-        List<Villager.Type> villagerTypes = toVillagerTypeList(section.getStringList("villagerTypes"));
+        List<Villager.Profession> professions = toVillagerProfessionList((List<String>) trade.getOrDefault("professions", Arrays.asList(
+                Villager.Profession.ARMORER, Villager.Profession.BUTCHER, Villager.Profession.CARTOGRAPHER, Villager.Profession.CLERIC, Villager.Profession.FARMER, Villager.Profession.FISHERMAN,
+                Villager.Profession.FLETCHER, Villager.Profession.LEATHERWORKER, Villager.Profession.LIBRARIAN, Villager.Profession.MASON, Villager.Profession.SHEPHERD, Villager.Profession.TOOLSMITH)));
+        List<Integer> levels = (List<Integer>) trade.getOrDefault("levels",
+                Arrays.asList(1, 2, 3, 4, 5));
+        List<Villager.Type> villagerTypes = toVillagerTypeList((List<String>) trade.getOrDefault("villager-types",
+                Arrays.asList(Villager.Type.SNOW, Villager.Type.TAIGA, Villager.Type.PLAINS, Villager.Type.SWAMP, Villager.Type.JUNGLE, Villager.Type.SAVANNA, Villager.Type.DESERT)));
 
-        MemorySection resultData = (MemorySection) section.get("result");
+        LinkedHashMap resultData = (LinkedHashMap) trade.get("result");
         if (resultData == null) {
             throw new ResultNotFoundException();
         }
-        result = toItemStack(resultData.getValues(false));
-        ingredients = toItemStackList(section.getMapList("ingredients"));
+        result = toItemStack(resultData);
+        ingredients = toItemStackList((List<Map<?, ?>>)trade.get("ingredients"));
         if (ingredients.size() < 1) {
             throw new IngredientsNotFoundException();
         }
@@ -145,7 +148,7 @@ public final class TradeLoader {
         if (secondIngredient != null)
             customTrade.addIngredient(secondIngredient);
         if (priceMultiplier != 0)
-            customTrade.setPriceMultiplier(priceMultiplier);
+            customTrade.setPriceMultiplier((float) priceMultiplier);
         if (villagerExperience != 0)
             customTrade.setVillagerExp(villagerExperience);
         customTrade.setPlayerExp(giveExperienceToPlayer);
@@ -155,7 +158,6 @@ public final class TradeLoader {
             customTrade.setTradeLevels(levels);
         if (!villagerTypes.isEmpty())
             customTrade.setAvailableTypes(villagerTypes);
-        customTrade.setIgnoreDiscounts(ignoreDiscounts);
 
         return customTrade;
     }

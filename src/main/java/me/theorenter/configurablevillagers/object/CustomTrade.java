@@ -57,10 +57,6 @@ public class CustomTrade {
         this.types = types;
     }
 
-    public void setIgnoreDiscounts(boolean flag) {
-        this.recipe.setIgnoreDiscounts(flag);
-    }
-
     @NotNull
     public String getID() {
         return ID;

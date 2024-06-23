@@ -21,7 +21,6 @@ public final class TradeStorage {
     private final Map<Villager.Type, HashSet<String>> TYPE_INDEX_MAP = new HashMap<>();
     private final Map<Integer, HashSet<String>> LEVEL_INDEX_MAP = new HashMap<>();
     public TradeStorage() {
-
         PROFESSION_INDEX_MAP.put(Villager.Profession.ARMORER, new HashSet<>());
         PROFESSION_INDEX_MAP.put(Villager.Profession.BUTCHER, new HashSet<>());
         PROFESSION_INDEX_MAP.put(Villager.Profession.CLERIC, new HashSet<>());
@@ -57,8 +56,9 @@ public final class TradeStorage {
      * @throws CustomTradeKeyAlreadyExistsException If custom trade with specified recipeID already exist.
      */
     public void register(@NotNull final String recipeID, @NotNull final CustomTrade customTrade) throws CustomTradeKeyAlreadyExistsException {
-        if (MERCHANT_TRADES.containsKey(recipeID))
+        if (MERCHANT_TRADES.containsKey(recipeID)) {
             throw new CustomTradeKeyAlreadyExistsException();
+        }
 
         MERCHANT_TRADES.put(recipeID, customTrade);
 

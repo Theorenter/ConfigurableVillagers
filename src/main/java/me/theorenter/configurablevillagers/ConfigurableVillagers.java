@@ -61,13 +61,12 @@ public final class ConfigurableVillagers extends JavaPlugin {
         this.log = getLogger();
         loadConfig();
         loadLocalization();
-        loadLoaders();
+        if (config.USE_CUSTOM_TRADES) loadLoaders();
         loadStorages();
 
         // Load all trades
-        if (config.USE_CUSTOM_TRADES) {
-            tradeLoader.loadAll();
-        }
+        if (config.USE_CUSTOM_TRADES) tradeLoader.loadAll();
+
 
         // Register listeners
         registerListeners();
@@ -82,7 +81,7 @@ public final class ConfigurableVillagers extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        unregisterListeners();
+        if (config.USE_CUSTOM_TRADES) unregisterListeners();
         showStatus();
     }
 
@@ -92,13 +91,11 @@ public final class ConfigurableVillagers extends JavaPlugin {
         this.log = getLogger();
         loadConfig();
         loadLocalization();
-        loadLoaders();
+        if (config.USE_CUSTOM_TRADES) loadLoaders();
         loadStorages();
 
         // Load all trades
-        if (config.USE_CUSTOM_TRADES) {
-            tradeLoader.loadAll();
-        }
+        if (config.USE_CUSTOM_TRADES) tradeLoader.loadAll();
 
         // Register listeners
         registerListeners();
@@ -177,7 +174,7 @@ public final class ConfigurableVillagers extends JavaPlugin {
         pm.registerEvents(villagerAcquireTradeEventListener, this);
         pm.registerEvents(villagerChangeProfessionListener, this);
         pm.registerEvents(entityTransformListener, this);
-        log.info("Listeners successfully loaded.");
+        log.info("Listeners successfully registered.");
     }
 
     private void registerCommands() {
